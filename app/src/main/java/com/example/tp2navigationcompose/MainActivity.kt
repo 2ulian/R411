@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.TextField
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -55,8 +56,12 @@ fun AppNavigation() {
         composable(route = "form") {
             FormScreen(navController = navController)
         }
-        composable(route = "display") {
-            DisplayScreen(navController = navController)
+        composable(
+            route = "display/{name}",
+            arguments = listOf(navArgument(name = "name") { defaultValue = "" })
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString(key = "name") ?: ""
+            DisplayScreen(navController = navController, name = name)
         }
     }
 }
@@ -114,7 +119,7 @@ fun FormScreen(navController: androidx.navigation.NavHostController) {
                 .padding(16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate(route = "display") }) {
+        Button(onClick = { navController.navigate(route = "display/$name") }) {
             Text(text = "Valider")
         }
         Spacer(modifier = Modifier.height(24.dp))
@@ -125,7 +130,7 @@ fun FormScreen(navController: androidx.navigation.NavHostController) {
 }
 
 @Composable
-fun DisplayScreen(navController: androidx.navigation.NavHostController) {
+fun DisplayScreen(navController: androidx.navigation.NavHostController, name: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -135,6 +140,11 @@ fun DisplayScreen(navController: androidx.navigation.NavHostController) {
     ) {
         Text(
             text = "Affichage du formulaire",
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = name,
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.height(24.dp))
