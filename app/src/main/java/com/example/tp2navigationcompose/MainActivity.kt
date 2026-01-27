@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,11 +60,15 @@ fun AppNavigation() {
             FormScreen(navController = navController)
         }
         composable(
-            route = "display/{name}",
-            arguments = listOf(navArgument(name = "name") { defaultValue = "" })
+            route = "display/{name}/{age}",
+            arguments = listOf(
+                navArgument(name = "name") { defaultValue = "" },
+                navArgument(name = "age") { defaultValue = "" }
+            )
         ) { backStackEntry ->
             val name = backStackEntry.arguments?.getString(key = "name") ?: ""
-            DisplayScreen(navController = navController, name = name)
+            val age = backStackEntry.arguments?.getString(key = "age") ?: ""
+            DisplayScreen(navController = navController, name = name, age = age)
         }
     }
 }
@@ -97,6 +104,7 @@ fun HomeScreen(navController: androidx.navigation.NavHostController) {
 @Composable
 fun FormScreen(navController: androidx.navigation.NavHostController) {
     var name by remember { mutableStateOf(value = "") }
+    var age by remember { mutableStateOf(value = "") }
 
     Column(
         modifier = Modifier
@@ -119,7 +127,17 @@ fun FormScreen(navController: androidx.navigation.NavHostController) {
                 .padding(16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate(route = "display/$name") }) {
+        TextField(
+            value = age,
+            onValueChange = { newText -> age = newText },
+            label = { Text(text = "Entrez votre age") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = { navController.navigate(route = "display/$name/$age") }) {
             Text(text = "Valider")
         }
         Spacer(modifier = Modifier.height(24.dp))
@@ -130,7 +148,11 @@ fun FormScreen(navController: androidx.navigation.NavHostController) {
 }
 
 @Composable
-fun DisplayScreen(navController: androidx.navigation.NavHostController, name: String) {
+fun DisplayScreen(
+    navController: androidx.navigation.NavHostController,
+    name: String,
+    age: String
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -139,12 +161,17 @@ fun DisplayScreen(navController: androidx.navigation.NavHostController, name: St
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Affichage du formulaire",
+            text = "Bienvenue",
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = name,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Vous avez $age ans !",
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.height(24.dp))
