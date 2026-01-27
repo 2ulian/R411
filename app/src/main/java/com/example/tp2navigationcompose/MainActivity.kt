@@ -14,10 +14,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.TextField
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -83,6 +88,8 @@ fun HomeScreen(navController: androidx.navigation.NavHostController) {
 
 @Composable
 fun FormScreen(navController: androidx.navigation.NavHostController) {
+    var name by remember { mutableStateOf(value = "") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,6 +102,14 @@ fun FormScreen(navController: androidx.navigation.NavHostController) {
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.height(24.dp))
+        TextField(
+            value = name,
+            onValueChange = { newText -> name = newText },
+            label = { Text(text = "Entrez votre nom") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Retour")
         }
